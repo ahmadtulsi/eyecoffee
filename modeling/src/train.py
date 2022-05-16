@@ -5,6 +5,7 @@ from sklearn.utils import shuffle
 import warnings
 warnings.filterwarnings('ignore')
 
+import os
 from dagshub.keras import DAGsHubLogger
 from dagshub import dagshub_logger
 from omegaconf import OmegaConf
@@ -25,6 +26,21 @@ from tensorflow.keras.layers.experimental.preprocessing import RandomCrop,Center
 
 MODELING_CONST_PATH = os.path.join('modeling', 'src', 'const.yaml')
 GENERAL_CONST_PATH = os.path.join('src', 'const.yaml')
+
+general_const = OmegaConf.load(os.path.join(os.getcwd(), GENERAL_CONST_PATH))
+modeling_const = OmegaConf.load(os.path.join(os.getcwd(), MODELING_CONST_PATH))
+
+os.environ['MLFLOW_TRACKING_USERNAME'] = 'ahmadtulsi'
+os.environ['MLFLOW_TRACKING_PASSWORD'] = '7c6d86ff091324e536609dd6306ce272c698241a'
+os.environ['MLFLOW_TRACKING_PROJECTNAME'] = 'eyecoffee'
+
+
+
+
+AUTOTUNE = tf.data.experimental.AUTOTUNE
+image_size = general_const.IMAGE_SIZE
+batch_size = general_const.BATCH_SIZE
+
 
 data_augmentation_layers = tf.keras.Sequential(
     [
@@ -102,17 +118,13 @@ def get_callbacks(csv_logger_path, checkpoint_filepath, model_const):
 
 
 if __name__ == "__main__":
-    general_const = OmegaConf.load(os.path.join(os.getcwd(), GENERAL_CONST_PATH))
-    modeling_const = OmegaConf.load(os.path.join(os.getcwd(), MODELING_CONST_PATH))
-
-    mlflow.set_tracking_uri(general_const.MLFLOW_TRACKING_URL)
+    
+    mlflow.set_tracking_uri(f'https://dagshub.com/' + os.environ['MLFLOW_TRACKING_USERNAME'] 
+                        + '/' + os.environ['MLFLOW_TRACKING_PROJECTNAME'] + '.mlflow')
     mlflow.tensorflow.autolog()
 
     with mlflow.start_run():
-        AUTOTUNE = tf.data.experimental.AUTOTUNE
-        image_size = general_const.IMAGE_SIZE
-        batch_size = general_const.BATCH_SIZE
-        training_data, validation_data = get_data(general_const.DATA_FILE, modeling_const.TRAINING_PERCENTAGE)
+        training_data, validation_data = get_data(general_const.DATA_FILE, general_const.TRAINING_PERCENTAGE)
         train_ds, val_ds = ready(training_data, validation_data)
         
         callbacks = list(get_callbacks(os.path.join(os.getcwd(), *modeling_const.CSV_LOG_PATH),

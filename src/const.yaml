@@ -11,8 +11,8 @@ IMG_SIZE: (256, 256)
 IMG_SHAPE: (256, 256, 3)
 
 #Path
-DATA_FILE: ['data', 'dataset_classes.csv']
-DATA_FILE: 'dataset_classes.csv'
+#DATA_FILE: ['data', 'dataset_classes.csv']
+DATA_FILE: 'data/dataset_classes.csv'
 
 PROD_MODEL_PATH: 'prod_model'
 

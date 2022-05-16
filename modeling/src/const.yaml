@@ -1,0 +1,13 @@
+# Save path
+CSV_LOG_PATH: ['modeling', 'model-checkpoint', 'TF_training_logs.csv']
+CHECKPOINT_PATH: ['modeling', 'model-checkpoint', 'TF-Model-Checkpoint']
+METRICS_PATH: ["evaluating", "eval", "metrics.csv"]
+PARAMS_PATH: ["evaluating", "eval", "params.yml"]
+
+# Model params
+INIT_EPOCHS: 20
+LEARNING_RATE: 1e-3
+LOSS: 'sparse_categorical_crossentropy'
+METRICS: ['accuracy']
+
+DROPOUT_RATE : 0.4

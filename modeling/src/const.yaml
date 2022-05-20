@@ -9,5 +9,6 @@ INIT_EPOCHS: 20
 LEARNING_RATE: 1e-3
 LOSS: 'sparse_categorical_crossentropy'
 METRICS: ['accuracy']
-
+MODEL: NASNetMobile
+NUM_CLASS: 4
 DROPOUT_RATE : 0.4

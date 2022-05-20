@@ -19,7 +19,7 @@ from tensorflow.keras import layers
 from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
 from tensorflow.keras.experimental import CosineDecay
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.applications import EfficientNetB3
+from tensorflow.keras.applications import EfficientNetB3, ResNet50V2, MobileNetV2, NASNetMobile, InceptionV3
 from tensorflow.keras.layers.experimental.preprocessing import RandomCrop,CenterCrop, RandomRotation
 
 
@@ -115,6 +115,18 @@ def get_callbacks(csv_logger_path, checkpoint_filepath, model_const):
                                                           save_best_only=True)
 
     return csv_logger, plateau, model_checkpoint, db_logger
+    
+
+def model(baseline_model, input_shape, dropout_rate, num_class):
+    
+    baseline_model = baseline_model(include_top=False, input_shape=input_shape, drop_connect_rate=dropout_rate)
+    inputs = Input(shape=input_shape)
+    model = baseline_model(inputs)
+    pooling = layers.GlobalAveragePooling2D()(model)
+    dropout = layers.Dropout(dropout_rate)(pooling)
+    outputs = layers.Dense(len(num_class), activation="softmax")(dropout)
+    model = Model(inputs=inputs, outputs=outputs)
+    
 
 
 if __name__ == "__main__":
@@ -130,8 +142,9 @@ if __name__ == "__main__":
         callbacks = list(get_callbacks(os.path.join(os.getcwd(), *modeling_const.CSV_LOG_PATH),
                                        os.path.join(os.getcwd(), *modeling_const.CHECKPOINT_PATH),
                                        modeling_const))
-
-        model = create_mobilevit(num_classes= general_const.NUM_CLASS)
+        
+        model = model(modeling_const.MODEL, general_const.INPUT_SHAPE,
+                        modeling_const.DROPOUT_RATE, modeling_const.NUM_CLASS)
 
         model.compile(loss=modeling_const.LOSS,
         optimizer=tf.keras.optimizers.Adam(lr= modeling_const.LEARNING_RATE),

@@ -104,7 +104,7 @@ def ready(training_data, validation_data):
 def get_callbacks(csv_logger_path, checkpoint_filepath, model_const):
     csv_logger = tf.keras.callbacks.CSVLogger(csv_logger_path)
 
-    plateau = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5)
+    plateau = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=3)
 
     db_logger = DAGsHubLogger(metrics_path=os.path.join(os.getcwd(), *model_const.METRICS_PATH),
                               hparams_path=os.path.join(os.getcwd(), *model_const.PARAMS_PATH))

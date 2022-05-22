@@ -5,7 +5,7 @@ METRICS_PATH: ["evaluating", "eval", "metrics.csv"]
 PARAMS_PATH: ["evaluating", "eval", "params.yml"]
 
 # Model params
-INIT_EPOCHS: 20
+INIT_EPOCHS: 10
 LEARNING_RATE: 1e-3
 LOSS: 'sparse_categorical_crossentropy'
 METRICS: ['accuracy']
